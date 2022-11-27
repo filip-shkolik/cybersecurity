@@ -1,0 +1,300 @@
+@use "sass:math";
+@use "sass:list";
+@use "sass:map";
+@use "sass:string";
+
+@mixin media($width) {
+	@media only screen and (max-width: "#{$width}px") {
+		@content;
+	}
+}
+
+// Clear bg when autocomplete to transparent
+@mixin transparent-bg-input() {
+	&:-webkit-autofill,
+	&:-webkit-autofill:hover,
+	&:-webkit-autofill:focus,
+	&:-webkit-autofill:active {
+		transition: background-color 5000s ease-in-out 0s;
+		-webkit-text-fill-color: #fff !important;
+	}
+}
+
+@mixin flex-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+@mixin flex-col {
+	display: flex;
+	flex-direction: column;
+}
+
+@mixin flex-col-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+@mixin flex-vert {
+	display: flex;
+	align-items: center;
+}
+
+@mixin flex-horiz {
+	display: flex;
+	justify-content: center;
+}
+
+@mixin hide-block {
+	opacity: 0;
+	visibility: hidden;
+}
+
+@mixin show-block {
+	opacity: 1;
+	visibility: visible;
+}
+
+@mixin font-icomoon {
+	font-family: "icomoon" !important;
+	speak: never;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+@function strip-unit($number) {
+	@if type-of($number) == 'number' and not unitless($number) {
+		@return math.div($number, ($number * 0 + 1));
+	}
+
+	@return $number;
+}
+
+@function remove($list, $value, $recursive: false) {
+	$result: ();
+
+	@for $i from 1 through length($list) {
+		@if type-of(nth($list, $i)) == list and $recursive {
+			$result: append($result, remove(nth($list, $i), $value, $recursive));
+		}
+
+		@else if nth($list, $i) != $value {
+			$result: append($result, nth($list, $i), space);
+		}
+	}
+
+	@return $result;
+}
+
+
+$maxWidth: 1920;
+$maxWidthContainer: 1400;
+
+@function main-adaptive-calc($startSize, $minSize, $flag: false) {
+	$difference: $startSize - $minSize;
+	$addSize: strip-unit($difference);
+
+	@if $flag == false {
+		@return min(calc(#{$minSize} + #{$addSize} * ((100vw - 375px) / #{$maxWidth - 375})), $startSize);
+	} @else {
+		@return min(calc(#{$minSize} + #{$addSize} * ((100vw - 375px) / #{$maxWidthContainer - 375})), $startSize);
+	}
+}
+
+@mixin adaptive-value($property, $startSize, $minSize, $type: 0) {
+	@if $type == 1 {
+		#{$property}: $startSize;
+		@media (max-width: #{$maxWidthContainer + px}) {
+			#{$property}: main-adaptive-calc($startSize, $minSize, true);
+		}
+	} @else if $type == 2 {
+		#{$property}: $startSize;
+		@media (min-width: #{$maxWidthContainer + px}) {
+			#{$property}: main-adaptive-calc($startSize, $minSize);
+		}
+	} @else {
+		#{$property}: main-adaptive-calc($startSize, $minSize);
+	}
+}
+
+
+@mixin adaptive-distance($first-list, $second-list: false, $third-list: false, $fourth-list: false, $attribute: false) {
+	$main-list: list.join(list.join($first-list, $second-list, space), list.join($third-list, $fourth-list, space), space);
+
+	$main-list: remove($main-list, false, true);
+	$length-list: length($main-list);
+
+	$buffer-list: $main-list;
+	$main-list: ();
+
+	@each $element in $buffer-list {
+		@if $element == auto {
+			$main-list: list.join($main-list, (auto auto));
+		} @else {
+			$main-list: list.append($main-list, $element);
+		}
+	}
+
+	$length-list: length($main-list);
+	$trueLength: ();
+
+	@for $i from 1 to math.div($length-list, 2) + 1 {
+		$startLength: nth($main-list, ($i * 2 - 1));
+		$endLength: nth($main-list, $i * 2);
+		$mainVariable: auto;
+
+		@if $startLength != auto {
+			$mainVariable: main-adaptive-calc($startLength, $endLength);
+		}
+
+		$trueLength: append($trueLength, $mainVariable);
+	}
+
+	@if $attribute == "margin" {
+		margin: $trueLength;
+	} @else if $attribute == "padding" {
+		padding: $trueLength;
+	} @else if $attribute == "border-radius" {
+		border-radius: $trueLength;
+	} @else if $attribute == "border-width" {
+		border-width: $trueLength;
+	}
+}
+
+@mixin adaptive-margin($first-list, $second-list: false, $third-list: false, $fourth-list: false) {
+	@include adaptive-distance($first-list, $second-list, $third-list, $fourth-list, $attribute: "margin");
+}
+
+@mixin adaptive-padding($first-list, $second-list: false, $third-list: false, $fourth-list: false) {
+	@include adaptive-distance($first-list, $second-list, $third-list, $fourth-list, $attribute: "padding");
+}
+
+@mixin adaptive-border-radius($first-list, $second-list: false, $third-list: false, $fourth-list: false) {
+	@include adaptive-distance($first-list, $second-list, $third-list, $fourth-list, $attribute: "border-radius");
+}
+
+@mixin adaptive-border-width($first-list, $second-list: false, $third-list: false, $fourth-list: false) {
+	@include adaptive-distance($first-list, $second-list, $third-list, $fourth-list, $attribute: "border-width");
+}
+
+@mixin font-set($size: false, $sizeMin: false, $lh: normal, $weight: normal, $color: $color-white) {
+	@if $size {
+		@include adaptive-value("font-size", $size, $sizeMin);
+	}
+	@if $lh {
+		line-height: $lh;
+	}
+	@if $weight {
+		font-weight: $weight;
+	}
+	@if $color {
+		color: $color;
+	}
+}
+
+@mixin grid-main {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	column-gap: 60px;
+	row-gap: 55px;
+	@include media(768) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+	@include media(550) {
+		grid-template-columns: repeat(1, 1fr);
+	}
+}
+
+@mixin text-clip {
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+}
+
+@mixin max-line-leng($num-of-rows) {
+	@if $num-of-rows == 1 {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	} @else {
+		padding: 0 !important;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		-webkit-line-clamp: $num-of-rows;
+	}
+}
+
+@function perc($number1, $number2: 1920) {
+	@return percentage(math.div($number1, $number2));
+}
+
+@mixin flex-calc($number-of-element-in-row, $margin-between-in-px) {
+	$true-margin: math.div($margin-between-in-px, $number-of-element-in-row) * ($number-of-element-in-row - 1);
+	$denominator-fixed-margin: ($margin-between-in-px * (math.div($number-of-element-in-row - 1, $number-of-element-in-row)));
+
+	@if not unitless($margin-between-in-px) {
+		width: calc(#{perc(1, $number-of-element-in-row)} - #{$denominator-fixed-margin});
+		&:not(:last-child) {
+			margin-right: $margin-between-in-px;
+		}
+	} @else {
+		width: calc(perc(1, $number-of-element-in-row) - perc($true-margin, $maxWidthContainer));
+		&:not(:last-child) {
+			margin-right: perc($margin-between-in-px, $maxWidthContainer);
+		}
+	}
+
+}
+
+@function vw($number1, $number2: 1920) {
+	@return math.div($number1 * 100, $number2) * 1vw;
+}
+
+@mixin adaptive-square($sizeStart, $sizeMobile) {
+	@include adaptive-value("width", $sizeStart, $sizeMobile);
+	@include adaptive-value("height", $sizeStart, $sizeMobile);
+}
+
+@mixin photo-aspect-ratio($photoWidth, $photoHeight) {
+	width: 100%;
+	height: 0;
+	position: relative;
+	padding: {
+		bottom: perc($photoHeight, $photoWidth);
+	}
+	overflow: hidden;
+
+	img {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		object-fit: cover;
+	}
+}
+
+@mixin res-blocks($photoWidth, $photoHeight) {
+	position: relative;
+	overflow: hidden;
+	&::before {
+		content: "";
+		display: block;
+		padding-top: perc($photoHeight, $photoWidth);
+	}
+	img {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		object-fit: cover;
+		top: 0;
+		left: 0;
+	}
+}

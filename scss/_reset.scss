@@ -1,0 +1,230 @@
+@charset "utf-8";
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+    box-sizing: border-box;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+menu,
+nav,
+section {
+    display: block;
+}
+
+:focus {
+    outline: 0;
+}
+
+ol,
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    display: block;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+input,
+textarea {
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+}
+
+label,
+button,
+input[type="submit"],
+input[type="button"] {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+body {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block;
+}
+
+img {
+    max-width: 100%;
+    vertical-align: middle;
+    height: auto;
+}
+
+body {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+button,
+input[type="submit"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+* {
+    box-sizing: border-box;
+}
+.slick-list{
+    overflow: hidden;
+    width: 100%;
+}
+.slick-track{
+    min-width: 1px;
+    display: flex;
+}
+.slick-dots{
+    display: flex;
+    button{
+        font-size: 0;
+        border: none;
+        background: #fff;
+        width: 12px;
+        height: 12px;
+        margin-right: 6px;
+        margin-bottom: 6px;
+        transition: background 0.2s;
+        cursor: pointer;
+
+    }
+    li{
+        &:last-of-type{
+         button{
+             margin-right: 0;
+         }
+        }
+        &.slick-active{
+            button{
+                background: #000;
+            }
+        }
+    }
+
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 50000s ease-in-out 0s;
+  -webkit-text-fill-color: #fff !important;
+}
+input, textarea{
+    border-radius: 0;
+}

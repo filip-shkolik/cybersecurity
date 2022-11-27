@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+$font-main: 'Raleway', sans-serif;
+
+$color-black: #161626;
+$color-cyan: #24ebcd;
+$color-turquoise: #42d6c5;
+$color-green: #24eb8b;
+$color-blue: #3cc5fb;
+$color-purple: #6256ae;
+$color-lightgrey: #f4f4f4;
+$color-white: #fff;
+$gradient-green-cyan: linear-gradient(to right, $color-green 0%, $color-cyan 100%);
+$gradient-cyan-purple: linear-gradient(to right, $color-cyan 0%, $color-purple 100%);
+$gradient-blue-cyan: linear-gradient(to right, $color-blue 0%, $color-cyan 100%);
+$gradient-blue-purple: linear-gradient(to right, $color-blue 0%, $color-purple 100%);
